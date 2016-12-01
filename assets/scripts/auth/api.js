@@ -35,9 +35,16 @@ const signOut = () =>
     },
   });
 
+  const getCard = () =>
+    $.ajax({
+      url: config.host+'/cards',
+      method: 'GET'
+    });
+
 module.exports = {
   signUp,
   signIn,
   changePassword,
   signOut,
+  getCard,
 };

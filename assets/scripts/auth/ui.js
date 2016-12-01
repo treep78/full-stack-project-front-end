@@ -1,10 +1,8 @@
 'use strict';
 
 const store = require('../store.js');
-const events = require('./events.js');
-const api = require('./api.js');
 
-const success = function(data)
+const success = function()
 {
   $('#messages').text('success');
 };
@@ -26,7 +24,7 @@ const signInSuccess = function(data)
   $('#account-menu').text(store.user.email.split('@')[0]+"'s Account");
 };
 
-const changePasswordSuccess = function(data)
+const changePasswordSuccess = function()
 {
   $('#messages').text('Password Changed!');
   $('#change-password-modal').modal('hide');
@@ -40,11 +38,22 @@ const signOutSuccess = function()
   $('#sign-up-button').html('<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#sign-up-modal">Sign Up</button>');
   $('#account-menu').text('Sign up/in');
   $('#new-game-buttons').hide();
-}
+};
 
 const failure = (error) => {
   console.error(error);
   $('#messages').text('failure');
+};
+
+const getCardSuccess = function (data) {
+  //$('#card-name').text('Name: '+data.card.name+' | Class: '+data.card.card_class);
+  let cardsList = '';
+  for (let i = 0; i < data.cards.length; i++) {
+    console.log(data.cards[i].name);
+    cardsList+='<option>'+data.cards[i].name+'</option>';
+    console.log(data.cards.length+' '+i);
+  }
+  $('#cards-list').append(cardsList);
 };
 
 module.exports = {
@@ -54,4 +63,5 @@ module.exports = {
   signInSuccess,
   changePasswordSuccess,
   signOutSuccess,
+  getCardSuccess,
 };
