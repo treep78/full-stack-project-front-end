@@ -35,16 +35,24 @@ const signOut = () =>
     },
   });
 
-  const getCard = () =>
-    $.ajax({
-      url: config.host+'/cards',
-      method: 'GET'
-    });
+const getCards = () =>
+  $.ajax({
+    url: config.host+'/cards',
+    method: 'GET'
+  });
+
+const newDeck = (data) =>
+  $.ajax({
+    url: config.host+'/decks',
+    method: 'POST',
+    data,
+  });
 
 module.exports = {
   signUp,
   signIn,
   changePassword,
   signOut,
-  getCard,
+  getCards,
+  newDeck,
 };

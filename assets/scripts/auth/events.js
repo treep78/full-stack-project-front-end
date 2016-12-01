@@ -4,6 +4,7 @@ const getFormFields = require(`../../../lib/get-form-fields`);
 
 const api = require('./api');
 const ui = require('./ui');
+const store = require('../store');
 
 
 const onSignUp = function (event) {
@@ -37,11 +38,24 @@ const onSignOut = function (event) {
     .catch(ui.failure);
 };
 
-const onGetCard = function (event) {
+const onNewDeck = function (event) {
   event.preventDefault();
-  api.getCard()
-    .then(ui.getCardSuccess)
+  let data = {
+    name: 'tempName',
+    description: 'tempDescription'
+  };
+  api.getCards()
+    .then(ui.getCardsSuccess)
     .catch(ui.failure);
+  api.newDeck(data)
+    .then(ui.newDeckSuccess)
+    .catch(ui.failure);
+};
+
+const onAddCard = function (event) {
+  event.preventDefault();
+  store.deck.cards.push($('#cards-list').find(':selected').text());
+  console.log(store.deck.cards);
 };
 
 const addHandlers = () => {
@@ -49,7 +63,8 @@ const addHandlers = () => {
   $('#sign-in').on('submit', onSignIn);
   $('#change-password').on('submit', onChangePassword);
   $('#sign-out').on('submit', onSignOut);
-  $('#get-card').on('click', onGetCard);
+  $('#new-deck').on('click', onNewDeck);
+  $('#add-card').on('click', onAddCard);
 };
 
 module.exports = {

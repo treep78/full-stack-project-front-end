@@ -45,15 +45,21 @@ const failure = (error) => {
   $('#messages').text('failure');
 };
 
-const getCardSuccess = function (data) {
-  //$('#card-name').text('Name: '+data.card.name+' | Class: '+data.card.card_class);
+const getCardsSuccess = function (data) {
   let cardsList = '';
   for (let i = 0; i < data.cards.length; i++) {
-    console.log(data.cards[i].name);
     cardsList+='<option>'+data.cards[i].name+'</option>';
-    console.log(data.cards.length+' '+i);
   }
   $('#cards-list').append(cardsList);
+};
+
+const newDeckSuccess = function (data) {
+  store.deck = {
+    name: data.name,
+    description: data.description,
+    cards: []
+  };
+  console.log(store.deck);
 };
 
 module.exports = {
@@ -63,5 +69,6 @@ module.exports = {
   signInSuccess,
   changePasswordSuccess,
   signOutSuccess,
-  getCardSuccess,
+  getCardsSuccess,
+  newDeckSuccess,
 };
