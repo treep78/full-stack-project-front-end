@@ -48,6 +48,25 @@ const newDeck = (data) =>
     data,
   });
 
+const newCardLink = (data) =>
+  $.ajax({
+    url: config.host+'/card_links',
+    method: 'POST',
+    data,
+  });
+
+const getCardLinks = () =>
+  $.ajax({
+    url: config.host+'/card_links',
+    method: 'GET',
+  });
+
+const removeCardLink = (data) =>
+  $.ajax({
+    url: config.host+'/card_links/'+data,
+    method: 'DELETE'
+  });
+
 module.exports = {
   signUp,
   signIn,
@@ -55,4 +74,7 @@ module.exports = {
   signOut,
   getCards,
   newDeck,
+  newCardLink,
+  getCardLinks,
+  removeCardLink,
 };

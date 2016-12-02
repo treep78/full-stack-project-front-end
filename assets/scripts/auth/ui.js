@@ -51,6 +51,7 @@ const getCardsSuccess = function (data) {
     cardsList+='<option>'+data.cards[i].name+'</option>';
   }
   $('#cards-list').append(cardsList);
+  store.cards = data.cards;
 };
 
 const newDeckSuccess = function (data) {
@@ -59,7 +60,19 @@ const newDeckSuccess = function (data) {
     description: data.description,
     cards: []
   };
-  console.log(store.deck);
+};
+
+const newCardLinkSuccess = function () {
+  $('#deck-cards').append('<option>'+store.deck.cards[store.deck.cards.length-1].name+'</option>');
+};
+
+const getCardLinksSccess = function (data) {
+  store.deck.links = data.card_links;
+  $('#remove-card').show();
+};
+
+const removeCardLinkSuccess = function () {
+  console.log('link removed');
 };
 
 module.exports = {
@@ -71,4 +84,7 @@ module.exports = {
   signOutSuccess,
   getCardsSuccess,
   newDeckSuccess,
+  newCardLinkSuccess,
+  getCardLinksSccess,
+  removeCardLinkSuccess,
 };

@@ -54,10 +54,64 @@ const onNewDeck = function (event) {
     .catch(ui.failure);
 };
 
+const onGetCardLinks = function () {
+  api.getCardLinks()
+    .then(ui.getCardLinksSccess)
+    .catch(ui.failure);
+};
+
 const onAddCard = function (event) {
   event.preventDefault();
-  store.deck.cards.push($('#cards-list').find(':selected').text());
-  console.log(store.deck.cards);
+  let card = ($('#cards-list').find(':selected').text());
+  for (let i = 0; i < store.cards.length; i++) {
+    if(store.cards[i].name === card) {
+      store.deck.cards.push(store.cards[i]);
+      console.log(store.deck);
+      let data = {
+        card_link: {
+          deck_id: '3',
+          card_id: ''+store.cards[i].id
+        }
+      };
+      $('#remove-card').hide();
+      api.newCardLink(data)
+        .then(ui.newCardLinkSuccess)
+        .catch(ui.failure);
+      onGetCardLinks();
+      return;
+    }
+  }
+};
+
+const onRemoveCard = function (event) {
+  event.preventDefault();
+  let card = ($('#deck-cards').find(':selected').text());
+  let deck_id = 3;
+  let card_id;
+  for (let i = 0; i < store.cards.length; i++) {
+    if(store.cards[i].name === card) {
+      store.deck.cards.push(store.cards[i]);
+      card_id = store.cards[i].id;
+    }
+  }
+  let data;
+  console.log(card_id);
+  //console.log(store.deck.links);
+  for (let i in store.deck.links) {
+    console.log(parseInt(i)+1);
+    if(store.deck.links[i].deck.id === deck_id) {
+      console.log('Current id: '+store.deck.links[i].card.id+' seeking: '+card_id);
+      if(store.deck.links[i].card.id === card_id) {
+        console.log(store.deck.links[i]);
+        data = store.deck.links[i].id;
+        break;
+      }
+    }
+    i++;
+  }
+  api.removeCardLink(data)
+    .then(ui.removeCardLinkSuccess)
+    .catch(ui.failure);
 };
 
 const addHandlers = () => {
@@ -67,6 +121,8 @@ const addHandlers = () => {
   $('#sign-out').on('submit', onSignOut);
   $('#new-deck').on('click', onNewDeck);
   $('#add-card').on('click', onAddCard);
+  $('#remove-card').on('click', onRemoveCard);
+  $('#remove-card').hide();
 };
 
 module.exports = {
