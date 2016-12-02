@@ -111,7 +111,14 @@ const onRemoveCard = function (event) {
   }
   api.removeCardLink(data)
     .then(ui.removeCardLinkSuccess)
+    .then($('#deck-cards').find("option:contains("+card+")").remove())
     .catch(ui.failure);
+  for(let i in store.deck.cards) {
+    if(store.deck.cards[i].name === card) {
+      store.deck.cards.splice(i,1);
+      console.log(store.deck.cards);
+    }
+  }
 };
 
 const addHandlers = () => {
