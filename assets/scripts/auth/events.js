@@ -41,8 +41,10 @@ const onSignOut = function (event) {
 const onNewDeck = function (event) {
   event.preventDefault();
   let data = {
-    name: 'tempName',
-    description: 'tempDescription'
+    deck: {
+      name: 'tempName',
+      description: 'tempDescription'
+    }
   };
   api.getCards()
     .then(ui.getCardsSuccess)
