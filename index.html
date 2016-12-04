@@ -53,15 +53,20 @@
 
 
       <div class="main">
-        <button type=button id="new-deck">New Deck</button>
+        <div id="new-deck-form">
+          <button type=button id="new-deck">New Deck</button>
+          <input type=text id=new-deck-name placeholder="Deck Name">
+        </div>
         <br>
-        <select id='cards-list'>
-        </select>
-        <button type=button id="add-card">Add Card</button>
-        <br>
-        <select id='deck-cards'>
-        </select>
-        <button type=button id="remove-card">Remove Card</button>
+        <div id="deck-forms">
+          <select id='cards-list'>
+          </select>
+          <button type=button id="add-card">Add Card</button>
+          <br>
+          <select id='deck-cards'>
+          </select>
+          <button type=button id="remove-card">Remove Card</button>
+        </div>
       </div>
 
 

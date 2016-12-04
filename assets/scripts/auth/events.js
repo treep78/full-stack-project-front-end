@@ -40,18 +40,23 @@ const onSignOut = function (event) {
 
 const onNewDeck = function (event) {
   event.preventDefault();
-  let data = {
-    deck: {
-      name: 'tempName',
-      description: 'tempDescription'
-    }
-  };
-  api.getCards()
-    .then(ui.getCardsSuccess)
-    .catch(ui.failure);
-  api.newDeck(data)
-    .then(ui.newDeckSuccess)
-    .catch(ui.failure);
+  if($('#new-deck-name').val() !== '') {
+    let data = {
+      deck: {
+        name: $('#new-deck-name').val(),
+        description: ''
+      }
+    };
+    api.getCards()
+      .then(ui.getCardsSuccess)
+      .catch(ui.failure);
+    api.newDeck(data)
+      .then(ui.newDeckSuccess)
+      .catch(ui.failure);
+    api.getDecks()
+      .then(ui.getDecksSuccess)
+      .catch(ui.failure);
+  }
 };
 
 const onGetCardLinks = function () {
@@ -66,10 +71,9 @@ const onAddCard = function (event) {
   for (let i = 0; i < store.cards.length; i++) {
     if(store.cards[i].name === card) {
       store.deck.cards.push(store.cards[i]);
-      console.log(store.deck);
       let data = {
         card_link: {
-          deck_id: '3',
+          deck_id: store.deck.id+'',
           card_id: ''+store.cards[i].id
         }
       };
@@ -86,23 +90,20 @@ const onAddCard = function (event) {
 const onRemoveCard = function (event) {
   event.preventDefault();
   let card = ($('#deck-cards').find(':selected').text());
-  let deck_id = 3;
+  let deck_id = store.deck.id;
   let card_id;
   for (let i = 0; i < store.cards.length; i++) {
     if(store.cards[i].name === card) {
-      store.deck.cards.push(store.cards[i]);
+      console.log(store.cards[i].id);
       card_id = store.cards[i].id;
+      break;
     }
   }
   let data;
-  console.log(card_id);
   //console.log(store.deck.links);
   for (let i in store.deck.links) {
-    console.log(parseInt(i)+1);
     if(store.deck.links[i].deck.id === deck_id) {
-      console.log('Current id: '+store.deck.links[i].card.id+' seeking: '+card_id);
       if(store.deck.links[i].card.id === card_id) {
-        console.log(store.deck.links[i]);
         data = store.deck.links[i].id;
         break;
       }
@@ -116,7 +117,6 @@ const onRemoveCard = function (event) {
   for(let i in store.deck.cards) {
     if(store.deck.cards[i].name === card) {
       store.deck.cards.splice(i,1);
-      console.log(store.deck.cards);
     }
   }
 };
@@ -130,6 +130,9 @@ const addHandlers = () => {
   $('#add-card').on('click', onAddCard);
   $('#remove-card').on('click', onRemoveCard);
   $('#remove-card').hide();
+  $('#new-deck-form').hide();
+  $('#deck-forms').hide();
+  $('#add-card').hide();
 };
 
 module.exports = {

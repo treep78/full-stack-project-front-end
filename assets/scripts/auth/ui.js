@@ -22,6 +22,7 @@ const signInSuccess = function(data)
   $('#sign-in-button').html("<form id='sign-out'><input type='submit' name='submit' value='Sign Out!' class='btn btn-primary btn-lg'></form>");
   $('#sign-up-button').html('<button type="button" class="btn btn-primary btn-lg" data-toggle="modal"data-target="#change-password-modal">Change Password</button>');
   $('#account-menu').text(store.user.email.split('@')[0]+"'s Account");
+  $('#new-deck-form').show();
 };
 
 const changePasswordSuccess = function()
@@ -38,6 +39,8 @@ const signOutSuccess = function()
   $('#sign-up-button').html('<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#sign-up-modal">Sign Up</button>');
   $('#account-menu').text('Sign up/in');
   $('#new-game-buttons').hide();
+  $('#new-deck-form').hide();
+  $('#deck-forms').hide();
 };
 
 const failure = (error) => {
@@ -52,6 +55,7 @@ const getCardsSuccess = function (data) {
   }
   $('#cards-list').append(cardsList);
   store.cards = data.cards;
+  $('#deck-forms').show();
 };
 
 const newDeckSuccess = function (data) {
@@ -60,6 +64,11 @@ const newDeckSuccess = function (data) {
     description: data.description,
     cards: []
   };
+};
+
+const getDecksSuccess = function (data) {
+  store.deck.id = data.decks[data.decks.length-1].id;
+  $('#add-card').show();
 };
 
 const newCardLinkSuccess = function () {
@@ -72,7 +81,6 @@ const getCardLinksSccess = function (data) {
 };
 
 const removeCardLinkSuccess = function () {
-  console.log('link removed');
 };
 
 module.exports = {
@@ -87,4 +95,5 @@ module.exports = {
   newCardLinkSuccess,
   getCardLinksSccess,
   removeCardLinkSuccess,
+  getDecksSuccess,
 };
