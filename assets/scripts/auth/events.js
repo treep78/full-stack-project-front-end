@@ -20,6 +20,7 @@ const onSignIn = function (event) {
   event.preventDefault();
   api.signIn(data)
     .then(ui.signInSuccess)
+    .then(this.loadDeck)
     .catch(ui.failure);
 };
 
@@ -53,11 +54,22 @@ const onNewDeck = function (event) {
     api.newDeck(data)
       .then(ui.newDeckSuccess)
       .catch(ui.failure);
-    api.getDecks()
-      .then(ui.getDecksSuccess)
-      .catch(ui.failure);
   }
 };
+
+const onLoadDeck = function (event) {
+  event.preventDefault();
+  api.getDecks()
+    .then(ui.getDecksSuccess)
+    .catch(ui.failure);
+};
+
+const loadDeck = function () {
+  api.getDecks()
+    .then(ui.getDecksForLoadSuccess)
+    .catch(ui.failure);
+};
+
 
 const onGetCardLinks = function () {
   api.getCardLinks()
@@ -77,7 +89,7 @@ const onAddCard = function (event) {
           card_id: ''+store.cards[i].id
         }
       };
-      $('#remove-card').hide();
+      $('#remove-card-div').hide();
       api.newCardLink(data)
         .then(ui.newCardLinkSuccess)
         .catch(ui.failure);
@@ -127,12 +139,13 @@ const addHandlers = () => {
   $('#change-password').on('submit', onChangePassword);
   $('#sign-out').on('submit', onSignOut);
   $('#new-deck').on('click', onNewDeck);
+  $('#load-deck').on('click', onLoadDeck);
   $('#add-card').on('click', onAddCard);
   $('#remove-card').on('click', onRemoveCard);
-  $('#remove-card').hide();
-  $('#new-deck-form').hide();
-  $('#deck-forms').hide();
-  $('#add-card').hide();
+  $('#new-deck-div').hide();
+  $('#load-deck-div').hide();
+  $('#add-card-div').hide();
+  $('#remove-card-div').hide();
 };
 
 module.exports = {
