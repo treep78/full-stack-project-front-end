@@ -38,7 +38,10 @@ const signOut = () =>
 const getCards = () =>
   $.ajax({
     url: config.host+'/cards',
-    method: 'GET'
+    method: 'GET',
+    headers: {
+      Authorization: 'Token token='+store.user.token,
+    }
   });
 
 const newDeck = (data) =>
@@ -46,6 +49,18 @@ const newDeck = (data) =>
     url: config.host+'/decks',
     method: 'POST',
     data,
+    headers: {
+      Authorization: 'Token token='+store.user.token,
+    }
+  });
+
+const getDecks = () =>
+  $.ajax({
+    url: config.host+'/decks',
+    method: 'GET',
+    headers: {
+      Authorization: 'Token token='+store.user.token,
+    }
   });
 
 const newCardLink = (data) =>
@@ -53,18 +68,27 @@ const newCardLink = (data) =>
     url: config.host+'/card_links',
     method: 'POST',
     data,
+    headers: {
+      Authorization: 'Token token='+store.user.token,
+    }
   });
 
 const getCardLinks = () =>
   $.ajax({
     url: config.host+'/card_links',
     method: 'GET',
+    headers: {
+      Authorization: 'Token token='+store.user.token,
+    }
   });
 
 const removeCardLink = (data) =>
   $.ajax({
     url: config.host+'/card_links/'+data,
-    method: 'DELETE'
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Token token='+store.user.token,
+    }
   });
 
 module.exports = {
@@ -77,4 +101,5 @@ module.exports = {
   newCardLink,
   getCardLinks,
   removeCardLink,
+  getDecks,
 };

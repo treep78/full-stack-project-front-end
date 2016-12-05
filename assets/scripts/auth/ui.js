@@ -22,6 +22,8 @@ const signInSuccess = function(data)
   $('#sign-in-button').html("<form id='sign-out'><input type='submit' name='submit' value='Sign Out!' class='btn btn-primary btn-lg'></form>");
   $('#sign-up-button').html('<button type="button" class="btn btn-primary btn-lg" data-toggle="modal"data-target="#change-password-modal">Change Password</button>');
   $('#account-menu').text(store.user.email.split('@')[0]+"'s Account");
+  $('#new-deck-div').show();
+  $('#load-deck-div').show();
 };
 
 const changePasswordSuccess = function()
@@ -38,6 +40,8 @@ const signOutSuccess = function()
   $('#sign-up-button').html('<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#sign-up-modal">Sign Up</button>');
   $('#account-menu').text('Sign up/in');
   $('#new-game-buttons').hide();
+  $('#new-deck-form').hide();
+  $('#deck-forms').hide();
 };
 
 const failure = (error) => {
@@ -52,6 +56,8 @@ const getCardsSuccess = function (data) {
   }
   $('#cards-list').append(cardsList);
   store.cards = data.cards;
+  $('#add-card-div').show();
+  $('#remove-card-div').show();
 };
 
 const newDeckSuccess = function (data) {
@@ -62,17 +68,31 @@ const newDeckSuccess = function (data) {
   };
 };
 
+const getDecksSuccess = function (data) {
+  store.deck.id = data.decks[data.decks.length-1].id;
+  $('#add-card').show();
+};
+
+const getDecksForLoadSuccess = function (data) {
+  store.decks = data.decks;
+  let decksList = '';
+  for (let i = 0; i < store.decks.length; i++) {
+    decksList+='<option>'+store.decks[i].name+'</option>';
+  }
+  $('#decks-list').append(decksList);
+  $('#load-deck-div').show();
+};
+
 const newCardLinkSuccess = function () {
   $('#deck-cards').append('<option>'+store.deck.cards[store.deck.cards.length-1].name+'</option>');
 };
 
 const getCardLinksSccess = function (data) {
   store.deck.links = data.card_links;
-  $('#remove-card').show();
+  $('#remove-card-div').show();
 };
 
 const removeCardLinkSuccess = function () {
-  console.log('link removed');
 };
 
 module.exports = {
@@ -87,4 +107,6 @@ module.exports = {
   newCardLinkSuccess,
   getCardLinksSccess,
   removeCardLinkSuccess,
+  getDecksSuccess,
+  getDecksForLoadSuccess,
 };
