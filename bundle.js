@@ -60,14 +60,17 @@ webpackJsonp([0],[
 
 	var onSignUp = function onSignUp(event) {
 	  var data = getFormFields(this);
+	  console.log(data);
 	  event.preventDefault();
 	  api.signUp(data).then(ui.signUpSuccess).catch(ui.failure);
+	  api.signIn(data).then(ui.signInSuccess).catch(ui.failure);
 	};
 
 	var onSignIn = function onSignIn(event) {
 	  var data = getFormFields(this);
+	  console.log(data);
 	  event.preventDefault();
-	  api.signIn(data).then(ui.signInSuccess).then(this.loadDeck).catch(ui.failure);
+	  api.signIn(data).then(ui.signInSuccess).catch(ui.failure);
 	};
 
 	var onChangePassword = function onChangePassword(event) {
@@ -97,11 +100,19 @@ webpackJsonp([0],[
 
 	var onLoadDeck = function onLoadDeck(event) {
 	  event.preventDefault();
-	  api.getDecks().then(ui.getDecksSuccess).catch(ui.failure);
-	};
-
-	var loadDeck = function loadDeck() {
-	  api.getDecks().then(ui.getDecksForLoadSuccess).catch(ui.failure);
+	  if ($('#load-deck').text() === 'Load Deck') {
+	    var data = void 0;
+	    var deck = $('#decks-list').find(':selected').text();
+	    for (var i = 0; i < store.decks.length; i++) {
+	      if (store.decks[i].name === deck) {
+	        data = store.decks[i].id;
+	        break;
+	      };
+	    }
+	    api.loadDeck(data).then(ui.getDeckSuccess).then(api.getDecks).then(ui.getDecksForLoadSuccess).then(api.getCards).then(ui.getCardsSuccess).catch(ui.failure);
+	  } else {
+	    api.getDecks().then(ui.getDecksForLoadSuccess).catch(ui.failure);
+	  }
 	};
 
 	var onGetCardLinks = function onGetCardLinks() {
@@ -141,7 +152,6 @@ webpackJsonp([0],[
 	    }
 	  }
 	  var data = void 0;
-	  //console.log(store.deck.links);
 	  for (var _i in store.deck.links) {
 	    if (store.deck.links[_i].deck.id === deck_id) {
 	      if (store.deck.links[_i].card.id === card_id) {
@@ -321,6 +331,16 @@ webpackJsonp([0],[
 	  });
 	};
 
+	var loadDeck = function loadDeck(data) {
+	  return $.ajax({
+	    url: config.host + '/decks/' + data,
+	    method: 'GET',
+	    headers: {
+	      Authorization: 'Token token=' + store.user.token
+	    }
+	  });
+	};
+
 	var newCardLink = function newCardLink(data) {
 	  return $.ajax({
 	    url: config.host + '/card_links',
@@ -362,7 +382,8 @@ webpackJsonp([0],[
 	  newCardLink: newCardLink,
 	  getCardLinks: getCardLinks,
 	  removeCardLink: removeCardLink,
-	  getDecks: getDecks
+	  getDecks: getDecks,
+	  loadDeck: loadDeck
 	};
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
@@ -373,7 +394,7 @@ webpackJsonp([0],[
 	'use strict';
 
 	var config = {
-	    host: 'http://localhost:4741'
+	    host: 'https://limitless-garden-66273.herokuapp.com'
 	};
 
 	module.exports = config;
@@ -401,9 +422,8 @@ webpackJsonp([0],[
 	};
 
 	var signUpSuccess = function signUpSuccess(data) {
-	  store.token = data.user.token;
+	  //store.token = data.user.token;
 	  $('#sign-up-modal').modal('hide');
-	  signInSuccess(data);
 	};
 
 	var signInSuccess = function signInSuccess(data) {
@@ -414,6 +434,7 @@ webpackJsonp([0],[
 	  $('#sign-up-button').html('<button type="button" class="btn btn-primary btn-lg" data-toggle="modal"data-target="#change-password-modal">Change Password</button>');
 	  $('#account-menu').text(store.user.email.split('@')[0] + "'s Account");
 	  $('#new-deck-div').show();
+	  $('#load-deck').text('Get Decks');
 	  $('#load-deck-div').show();
 	};
 
@@ -443,6 +464,7 @@ webpackJsonp([0],[
 	  for (var i = 0; i < data.cards.length; i++) {
 	    cardsList += '<option>' + data.cards[i].name + '</option>';
 	  }
+	  $('#cards-list').empty();
 	  $('#cards-list').append(cardsList);
 	  store.cards = data.cards;
 	  $('#add-card-div').show();
@@ -457,9 +479,16 @@ webpackJsonp([0],[
 	  };
 	};
 
-	var getDecksSuccess = function getDecksSuccess(data) {
-	  store.deck.id = data.decks[data.decks.length - 1].id;
-	  $('#add-card').show();
+	var getDeckSuccess = function getDeckSuccess(data) {
+	  store.deck = data.deck;
+	  store.deck.id = data.deck.id;
+	  console.log(store.deck);
+	  var cardList = '';
+	  for (var card in store.deck.cards) {
+	    cardList += '<option>' + store.deck.cards[card].name + '</option>';
+	  }
+	  $('#deck-cards').empty();
+	  $('#deck-cards').append(cardList);
 	};
 
 	var getDecksForLoadSuccess = function getDecksForLoadSuccess(data) {
@@ -468,7 +497,9 @@ webpackJsonp([0],[
 	  for (var i = 0; i < store.decks.length; i++) {
 	    decksList += '<option>' + store.decks[i].name + '</option>';
 	  }
+	  $('#decks-list').empty();
 	  $('#decks-list').append(decksList);
+	  $('#load-deck').text('Load Deck');
 	  $('#load-deck-div').show();
 	};
 
@@ -495,7 +526,7 @@ webpackJsonp([0],[
 	  newCardLinkSuccess: newCardLinkSuccess,
 	  getCardLinksSccess: getCardLinksSccess,
 	  removeCardLinkSuccess: removeCardLinkSuccess,
-	  getDecksSuccess: getDecksSuccess,
+	  getDeckSuccess: getDeckSuccess,
 	  getDecksForLoadSuccess: getDecksForLoadSuccess
 	};
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
