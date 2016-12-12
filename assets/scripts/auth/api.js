@@ -63,6 +63,15 @@ const getDecks = () =>
     }
   });
 
+const loadDeck = (data) =>
+  $.ajax({
+    url: config.host+'/decks/'+data,
+    method: 'GET',
+    headers: {
+      Authorization: 'Token token='+store.user.token,
+    }
+  });
+
 const newCardLink = (data) =>
   $.ajax({
     url: config.host+'/card_links',
@@ -102,4 +111,5 @@ module.exports = {
   getCardLinks,
   removeCardLink,
   getDecks,
+  loadDeck,
 };

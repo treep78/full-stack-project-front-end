@@ -9,18 +9,22 @@ const store = require('../store');
 
 const onSignUp = function (event) {
   let data = getFormFields(this);
+  console.log(data);
   event.preventDefault();
   api.signUp(data)
     .then(ui.signUpSuccess)
+    .catch(ui.failure);
+  api.signIn(data)
+    .then(ui.signInSuccess)
     .catch(ui.failure);
 };
 
 const onSignIn = function (event) {
   let data = getFormFields(this);
+  console.log(data);
   event.preventDefault();
   api.signIn(data)
     .then(ui.signInSuccess)
-    .then(this.loadDeck)
     .catch(ui.failure);
 };
 
@@ -59,17 +63,29 @@ const onNewDeck = function (event) {
 
 const onLoadDeck = function (event) {
   event.preventDefault();
-  api.getDecks()
-    .then(ui.getDecksSuccess)
-    .catch(ui.failure);
+  if($('#load-deck').text() === 'Load Deck'){
+    let data;
+    let deck = ($('#decks-list').find(':selected').text());
+    for (let i = 0; i < store.decks.length; i++) {
+      if(store.decks[i].name === deck) {
+        data = store.decks[i].id;
+        break;
+      };
+    }
+    api.loadDeck(data)
+      .then(ui.getDeckSuccess)
+      .then(api.getDecks)
+      .then(ui.getDecksForLoadSuccess)
+      .then(api.getCards)
+      .then(ui.getCardsSuccess)
+      .catch(ui.failure);
+  }
+  else {
+    api.getDecks()
+      .then(ui.getDecksForLoadSuccess)
+      .catch(ui.failure);
+    }
 };
-
-const loadDeck = function () {
-  api.getDecks()
-    .then(ui.getDecksForLoadSuccess)
-    .catch(ui.failure);
-};
-
 
 const onGetCardLinks = function () {
   api.getCardLinks()
@@ -112,7 +128,6 @@ const onRemoveCard = function (event) {
     }
   }
   let data;
-  //console.log(store.deck.links);
   for (let i in store.deck.links) {
     if(store.deck.links[i].deck.id === deck_id) {
       if(store.deck.links[i].card.id === card_id) {
