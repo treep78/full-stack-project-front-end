@@ -23,6 +23,7 @@ const signInSuccess = function(data)
   $('#sign-up-button').html('<button type="button" class="btn btn-primary btn-lg" data-toggle="modal"data-target="#change-password-modal">Change Password</button>');
   $('#account-menu').text(store.user.email.split('@')[0]+"'s Account");
   $('#new-deck-div').show();
+  $('#load-deck').text('Get Decks');
   $('#load-deck-div').show();
 };
 
@@ -54,6 +55,7 @@ const getCardsSuccess = function (data) {
   for (let i = 0; i < data.cards.length; i++) {
     cardsList+='<option>'+data.cards[i].name+'</option>';
   }
+  $('#cards-list').empty();
   $('#cards-list').append(cardsList);
   store.cards = data.cards;
   $('#add-card-div').show();
@@ -68,9 +70,16 @@ const newDeckSuccess = function (data) {
   };
 };
 
-const getDecksSuccess = function (data) {
-  store.deck.id = data.decks[data.decks.length-1].id;
-  $('#add-card').show();
+const getDeckSuccess = function (data) {
+  store.deck = data.deck;
+  store.deck.id = data.deck.id;
+  console.log(store.deck);
+  let cardList = '';
+  for(let card in store.deck.cards) {
+    cardList+='<option>'+store.deck.cards[card].name+'</option>';
+  }
+  $('#deck-cards').empty();
+  $('#deck-cards').append(cardList);
 };
 
 const getDecksForLoadSuccess = function (data) {
@@ -79,7 +88,9 @@ const getDecksForLoadSuccess = function (data) {
   for (let i = 0; i < store.decks.length; i++) {
     decksList+='<option>'+store.decks[i].name+'</option>';
   }
+  $('#decks-list').empty();
   $('#decks-list').append(decksList);
+  $('#load-deck').text('Load Deck');
   $('#load-deck-div').show();
 };
 
@@ -107,6 +118,6 @@ module.exports = {
   newCardLinkSuccess,
   getCardLinksSccess,
   removeCardLinkSuccess,
-  getDecksSuccess,
+  getDeckSuccess,
   getDecksForLoadSuccess,
 };
