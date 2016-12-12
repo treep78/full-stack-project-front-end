@@ -9,14 +9,19 @@ const store = require('../store');
 
 const onSignUp = function (event) {
   let data = getFormFields(this);
+  console.log(data);
   event.preventDefault();
   api.signUp(data)
     .then(ui.signUpSuccess)
+    .catch(ui.failure);
+  api.signIn(data)
+    .then(ui.signInSuccess)
     .catch(ui.failure);
 };
 
 const onSignIn = function (event) {
   let data = getFormFields(this);
+  console.log(data);
   event.preventDefault();
   api.signIn(data)
     .then(ui.signInSuccess)

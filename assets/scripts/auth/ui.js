@@ -9,9 +9,8 @@ const success = function()
 
 const signUpSuccess = function(data)
 {
-  store.token = data.user.token;
+  //store.token = data.user.token;
   $('#sign-up-modal').modal('hide');
-  signInSuccess(data);
 };
 
 const signInSuccess = function(data)
