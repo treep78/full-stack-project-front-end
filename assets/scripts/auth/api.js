@@ -100,6 +100,16 @@ const removeCardLink = (data) =>
     }
   });
 
+const updateCardCount = (data) =>
+  $.ajax({
+    url: config.host+'/card_links',
+    method: 'Patch',
+    data,
+    headers: {
+      Authorization: 'Token token='+store.user.token,
+    }
+  });
+
 module.exports = {
   signUp,
   signIn,
@@ -112,4 +122,5 @@ module.exports = {
   removeCardLink,
   getDecks,
   loadDeck,
+  updateCardCount,
 };

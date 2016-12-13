@@ -105,6 +105,12 @@ const getCardLinksSccess = function (data) {
 const removeCardLinkSuccess = function () {
 };
 
+const updateCardCountSuccess = function () {
+  console.log("Victory");
+  $('#card-count').empty();
+  $('#card-count').append(store.deck.cards.length);
+}
+
 module.exports = {
   failure,
   success,
@@ -119,4 +125,5 @@ module.exports = {
   removeCardLinkSuccess,
   getDeckSuccess,
   getDecksForLoadSuccess,
+  updateCardCountSuccess,
 };

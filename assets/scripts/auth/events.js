@@ -146,6 +146,9 @@ const onRemoveCard = function (event) {
       store.deck.cards.splice(i,1);
     }
   }
+  api.updateCardCount(store.deck.cards.length)
+    .then(ui.updateCardCountSuccess)
+    .catch(ui.failure)
 };
 
 const addHandlers = () => {
