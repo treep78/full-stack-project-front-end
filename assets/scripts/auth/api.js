@@ -100,11 +100,11 @@ const removeCardLink = (data) =>
     }
   });
 
-const updateCardCount = (data) =>
+const updateCardCount = (data, id) =>
   $.ajax({
-    url: config.host+'/card_links/'+data.id,
+    url: config.host+'/card_links/'+id,
     method: 'Patch',
-    data.count,
+    data,
     headers: {
       Authorization: 'Token token='+store.user.token,
     }
