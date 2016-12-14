@@ -147,7 +147,9 @@ const onRemoveCard = function (event) {
     }
   }
   let data2 = {
-    count: store.deck.cards.length,
+    deck: {
+      description: "Cards in Deck: "+store.deck.cards.length
+    },
     id: store.deck.id
   };
   api.updateCardCount(data2)
