@@ -102,7 +102,7 @@ const removeCardLink = (data) =>
 
 const updateCardCount = (data, id) =>
   $.ajax({
-    url: config.host+'/card_links/'+id,
+    url: config.host+'/decks/'+id,
     method: 'Patch',
     data,
     headers: {

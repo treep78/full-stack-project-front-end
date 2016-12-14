@@ -113,6 +113,14 @@ const onAddCard = function (event) {
       return;
     }
   }
+  let data2 = {
+    deck: {
+      description: "Cards in Deck: "+store.deck.cards.length
+    }
+  };
+  api.updateCardCount(data2, store.deck.id)
+    .then(ui.updateCardCountSuccess)
+    .catch(ui.failure);
 };
 
 const onRemoveCard = function (event) {
