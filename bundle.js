@@ -60,7 +60,6 @@ webpackJsonp([0],[
 
 	var onSignUp = function onSignUp(event) {
 	  var data = getFormFields(this);
-	  console.log(data);
 	  event.preventDefault();
 	  api.signUp(data).then(ui.signUpSuccess).catch(ui.failure);
 	  api.signIn(data).then(ui.signInSuccess).catch(ui.failure);
@@ -68,7 +67,6 @@ webpackJsonp([0],[
 
 	var onSignIn = function onSignIn(event) {
 	  var data = getFormFields(this);
-	  console.log(data);
 	  event.preventDefault();
 	  api.signIn(data).then(ui.signInSuccess).catch(ui.failure);
 	};
@@ -87,14 +85,25 @@ webpackJsonp([0],[
 	var onNewDeck = function onNewDeck(event) {
 	  event.preventDefault();
 	  if ($('#new-deck-name').val() !== '') {
-	    var data = {
-	      deck: {
-	        name: $('#new-deck-name').val(),
-	        description: ''
-	      }
-	    };
-	    api.getCards().then(ui.getCardsSuccess).catch(ui.failure);
-	    api.newDeck(data).then(ui.newDeckSuccess).catch(ui.failure);
+	    (function () {
+	      var data = {
+	        deck: {
+	          name: $('#new-deck-name').val(),
+	          description: ''
+	        }
+	      };
+	      api.newDeck(data).then(ui.newDeckSuccess).then(api.getDecks).then(ui.getDecksForLoadSuccess).then(function () {
+	        var id = void 0;
+	        var deck = data.deck.name;
+	        for (var i = 0; i < store.decks.length; i++) {
+	          if (store.decks[i].name === deck) {
+	            id = store.decks[i].id;
+	            break;
+	          }
+	        }
+	        return api.loadDeck(id);
+	      }).then(ui.getDeckSuccess).then(api.getDecks).then(ui.getDecksForLoadSuccess).then(api.getCards).then(ui.getCardsSuccess).catch(ui.failure);
+	    })();
 	  }
 	};
 
@@ -122,27 +131,21 @@ webpackJsonp([0],[
 	var onAddCard = function onAddCard(event) {
 	  event.preventDefault();
 	  var card = $('#cards-list').find(':selected').text();
+	  var data = void 0;
 	  for (var i = 0; i < store.cards.length; i++) {
 	    if (store.cards[i].name === card) {
 	      store.deck.cards.push(store.cards[i]);
-	      var data = {
+	      data = {
 	        card_link: {
 	          deck_id: store.deck.id + '',
 	          card_id: '' + store.cards[i].id
 	        }
 	      };
-	      $('#remove-card-div').hide();
-	      api.newCardLink(data).then(ui.newCardLinkSuccess).catch(ui.failure);
-	      onGetCardLinks();
-	      return;
+	      break;
 	    }
 	  }
-	  var data2 = {
-	    deck: {
-	      description: "Cards in Deck: " + store.deck.cards.length
-	    }
-	  };
-	  api.updateCardCount(data2, store.deck.id).then(ui.updateCardCountSuccess).catch(ui.failure);
+	  $('#remove-card-div').hide();
+	  api.newCardLink(data).then(ui.newCardLinkSuccess).then(onGetCardLinks).catch(ui.failure);
 	};
 
 	var onRemoveCard = function onRemoveCard(event) {
@@ -152,11 +155,11 @@ webpackJsonp([0],[
 	  var card_id = void 0;
 	  for (var i = 0; i < store.cards.length; i++) {
 	    if (store.cards[i].name === card) {
-	      console.log(store.cards[i].id);
 	      card_id = store.cards[i].id;
 	      break;
 	    }
 	  }
+	  if (!card_id) {}
 	  var data = void 0;
 	  for (var _i in store.deck.links) {
 	    if (store.deck.links[_i].deck.id === deck_id) {
@@ -167,18 +170,20 @@ webpackJsonp([0],[
 	    }
 	    _i++;
 	  }
-	  api.removeCardLink(data).then(ui.removeCardLinkSuccess).then($('#deck-cards').find("option:contains(" + card + ")").remove()).catch(ui.failure);
-	  for (var _i2 in store.deck.cards) {
-	    if (store.deck.cards[_i2].name === card) {
-	      store.deck.cards.splice(_i2, 1);
+	  api.removeCardLink(data).then(ui.removeCardLinkSuccess).then(function () {
+	    $('#deck-cards').find("option:contains(" + card + ")").remove();
+	    for (var _i2 in store.deck.cards) {
+	      if (store.deck.cards[_i2].name === card) {
+	        store.deck.cards.splice(_i2, 1);
+	      }
 	    }
-	  }
-	  var data2 = {
-	    deck: {
-	      description: "Cards in Deck: " + store.deck.cards.length
-	    }
-	  };
-	  api.updateCardCount(data2, store.deck.id).then(ui.updateCardCountSuccess).catch(ui.failure);
+	    var data2 = {
+	      deck: {
+	        description: "Cards in Deck: " + store.deck.cards.length
+	      }
+	    };
+	    api.updateCardCount(data2, store.deck.id).then(ui.updateCardCountSuccess).catch(ui.failure);
+	  }).catch(ui.deleteCardFailure).then();
 	};
 
 	var addHandlers = function addHandlers() {
@@ -445,7 +450,7 @@ webpackJsonp([0],[
 	  $('#messages').text('success');
 	};
 
-	var signUpSuccess = function signUpSuccess(data) {
+	var signUpSuccess = function signUpSuccess() {
 	  //store.token = data.user.token;
 	  $('#sign-up-modal').modal('hide');
 	};
@@ -478,7 +483,7 @@ webpackJsonp([0],[
 	  $('#deck-forms').hide();
 	};
 
-	var failure = function failure(error) {
+	var failure = function failure() {
 	  $('#messages').text('failure');
 	};
 
@@ -546,6 +551,11 @@ webpackJsonp([0],[
 	  $('#card-count').append("Cards in Deck: " + store.deck.cards.length);
 	};
 
+	var deleteCardFailure = function deleteCardFailure() {
+	  $('#card-count').empty();
+	  $('#card-count').append("You don't have permission to delete that!");
+	};
+
 	module.exports = {
 	  failure: failure,
 	  success: success,
@@ -560,7 +570,8 @@ webpackJsonp([0],[
 	  removeCardLinkSuccess: removeCardLinkSuccess,
 	  getDeckSuccess: getDeckSuccess,
 	  getDecksForLoadSuccess: getDecksForLoadSuccess,
-	  updateCardCountSuccess: updateCardCountSuccess
+	  updateCardCountSuccess: updateCardCountSuccess,
+	  deleteCardFailure: deleteCardFailure
 	};
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
