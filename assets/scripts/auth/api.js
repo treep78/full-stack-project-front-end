@@ -102,9 +102,9 @@ const removeCardLink = (data) =>
 
 const updateCardCount = (data) =>
   $.ajax({
-    url: config.host+'/card_links',
+    url: config.host+'/card_links/'+data.id,
     method: 'Patch',
-    data,
+    data.count,
     headers: {
       Authorization: 'Token token='+store.user.token,
     }

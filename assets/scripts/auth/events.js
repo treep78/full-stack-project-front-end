@@ -70,7 +70,7 @@ const onLoadDeck = function (event) {
       if(store.decks[i].name === deck) {
         data = store.decks[i].id;
         break;
-      };
+      }
     }
     api.loadDeck(data)
       .then(ui.getDeckSuccess)
@@ -146,9 +146,13 @@ const onRemoveCard = function (event) {
       store.deck.cards.splice(i,1);
     }
   }
-  api.updateCardCount(store.deck.cards.length)
+  let data2 = {
+    count: store.deck.cards.length,
+    id: store.deck.id
+  };
+  api.updateCardCount(data2)
     .then(ui.updateCardCountSuccess)
-    .catch(ui.failure)
+    .catch(ui.failure);
 };
 
 const addHandlers = () => {
