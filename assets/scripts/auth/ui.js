@@ -45,7 +45,6 @@ const signOutSuccess = function()
 };
 
 const failure = (error) => {
-  console.error(error);
   $('#messages').text('failure');
 };
 
@@ -67,6 +66,8 @@ const newDeckSuccess = function (data) {
     description: data.description,
     cards: []
   };
+  $('#card-count').empty();
+  $('#card-count').append("Cards in Deck: "+store.deck.cards.length);
 };
 
 const getDeckSuccess = function (data) {
@@ -79,6 +80,8 @@ const getDeckSuccess = function (data) {
   }
   $('#deck-cards').empty();
   $('#deck-cards').append(cardList);
+  $('#card-count').empty();
+  $('#card-count').append("Cards in Deck: "+store.deck.cards.length);
 };
 
 const getDecksForLoadSuccess = function (data) {
@@ -105,6 +108,11 @@ const getCardLinksSccess = function (data) {
 const removeCardLinkSuccess = function () {
 };
 
+const updateCardCountSuccess = function () {
+  $('#card-count').empty();
+  $('#card-count').append("Cards in Deck: "+store.deck.cards.length);
+}
+
 module.exports = {
   failure,
   success,
@@ -119,4 +127,5 @@ module.exports = {
   removeCardLinkSuccess,
   getDeckSuccess,
   getDecksForLoadSuccess,
+  updateCardCountSuccess,
 };
