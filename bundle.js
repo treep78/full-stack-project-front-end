@@ -107,7 +107,7 @@ webpackJsonp([0],[
 	      if (store.decks[i].name === deck) {
 	        data = store.decks[i].id;
 	        break;
-	      };
+	      }
 	    }
 	    api.loadDeck(data).then(ui.getDeckSuccess).then(api.getDecks).then(ui.getDecksForLoadSuccess).then(api.getCards).then(ui.getCardsSuccess).catch(ui.failure);
 	  } else {
@@ -137,6 +137,12 @@ webpackJsonp([0],[
 	      return;
 	    }
 	  }
+	  var data2 = {
+	    deck: {
+	      description: "Cards in Deck: " + store.deck.cards.length
+	    }
+	  };
+	  api.updateCardCount(data2, store.deck.id).then(ui.updateCardCountSuccess).catch(ui.failure);
 	};
 
 	var onRemoveCard = function onRemoveCard(event) {
@@ -167,6 +173,12 @@ webpackJsonp([0],[
 	      store.deck.cards.splice(_i2, 1);
 	    }
 	  }
+	  var data2 = {
+	    deck: {
+	      description: "Cards in Deck: " + store.deck.cards.length
+	    }
+	  };
+	  api.updateCardCount(data2, store.deck.id).then(ui.updateCardCountSuccess).catch(ui.failure);
 	};
 
 	var addHandlers = function addHandlers() {
@@ -372,6 +384,17 @@ webpackJsonp([0],[
 	  });
 	};
 
+	var updateCardCount = function updateCardCount(data, id) {
+	  return $.ajax({
+	    url: config.host + '/decks/' + id,
+	    method: 'Patch',
+	    data: data,
+	    headers: {
+	      Authorization: 'Token token=' + store.user.token
+	    }
+	  });
+	};
+
 	module.exports = {
 	  signUp: signUp,
 	  signIn: signIn,
@@ -383,7 +406,8 @@ webpackJsonp([0],[
 	  getCardLinks: getCardLinks,
 	  removeCardLink: removeCardLink,
 	  getDecks: getDecks,
-	  loadDeck: loadDeck
+	  loadDeck: loadDeck,
+	  updateCardCount: updateCardCount
 	};
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
@@ -455,7 +479,6 @@ webpackJsonp([0],[
 	};
 
 	var failure = function failure(error) {
-	  console.error(error);
 	  $('#messages').text('failure');
 	};
 
@@ -477,6 +500,8 @@ webpackJsonp([0],[
 	    description: data.description,
 	    cards: []
 	  };
+	  $('#card-count').empty();
+	  $('#card-count').append("Cards in Deck: " + store.deck.cards.length);
 	};
 
 	var getDeckSuccess = function getDeckSuccess(data) {
@@ -489,6 +514,8 @@ webpackJsonp([0],[
 	  }
 	  $('#deck-cards').empty();
 	  $('#deck-cards').append(cardList);
+	  $('#card-count').empty();
+	  $('#card-count').append("Cards in Deck: " + store.deck.cards.length);
 	};
 
 	var getDecksForLoadSuccess = function getDecksForLoadSuccess(data) {
@@ -514,6 +541,11 @@ webpackJsonp([0],[
 
 	var removeCardLinkSuccess = function removeCardLinkSuccess() {};
 
+	var updateCardCountSuccess = function updateCardCountSuccess() {
+	  $('#card-count').empty();
+	  $('#card-count').append("Cards in Deck: " + store.deck.cards.length);
+	};
+
 	module.exports = {
 	  failure: failure,
 	  success: success,
@@ -527,7 +559,8 @@ webpackJsonp([0],[
 	  getCardLinksSccess: getCardLinksSccess,
 	  removeCardLinkSuccess: removeCardLinkSuccess,
 	  getDeckSuccess: getDeckSuccess,
-	  getDecksForLoadSuccess: getDecksForLoadSuccess
+	  getDecksForLoadSuccess: getDecksForLoadSuccess,
+	  updateCardCountSuccess: updateCardCountSuccess
 	};
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
