@@ -7,7 +7,7 @@ const success = function()
   $('#messages').text('success');
 };
 
-const signUpSuccess = function(data)
+const signUpSuccess = function()
 {
   //store.token = data.user.token;
   $('#sign-up-modal').modal('hide');
@@ -44,7 +44,7 @@ const signOutSuccess = function()
   $('#deck-forms').hide();
 };
 
-const failure = (error) => {
+const failure = () => {
   $('#messages').text('failure');
 };
 
@@ -106,12 +106,18 @@ const getCardLinksSccess = function (data) {
 };
 
 const removeCardLinkSuccess = function () {
+
 };
 
 const updateCardCountSuccess = function () {
   $('#card-count').empty();
   $('#card-count').append("Cards in Deck: "+store.deck.cards.length);
-}
+};
+
+const deleteCardFailure = function () {
+  $('#card-count').empty();
+  $('#card-count').append("You don't have permission to delete that!");
+};
 
 module.exports = {
   failure,
@@ -128,4 +134,5 @@ module.exports = {
   getDeckSuccess,
   getDecksForLoadSuccess,
   updateCardCountSuccess,
+  deleteCardFailure,
 };

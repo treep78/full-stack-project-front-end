@@ -9,7 +9,6 @@ const store = require('../store');
 
 const onSignUp = function (event) {
   let data = getFormFields(this);
-  console.log(data);
   event.preventDefault();
   api.signUp(data)
     .then(ui.signUpSuccess)
@@ -21,7 +20,6 @@ const onSignUp = function (event) {
 
 const onSignIn = function (event) {
   let data = getFormFields(this);
-  console.log(data);
   event.preventDefault();
   api.signIn(data)
     .then(ui.signInSuccess)
@@ -52,11 +50,26 @@ const onNewDeck = function (event) {
         description: ''
       }
     };
-    api.getCards()
-      .then(ui.getCardsSuccess)
-      .catch(ui.failure);
     api.newDeck(data)
       .then(ui.newDeckSuccess)
+      .then(api.getDecks)
+      .then(ui.getDecksForLoadSuccess)
+      .then(()=>{
+        let id;
+        let deck = data.deck.name;
+        for (let i = 0; i < store.decks.length; i++) {
+          if(store.decks[i].name === deck) {
+            id = store.decks[i].id;
+            break;
+          }
+        }
+        return api.loadDeck(id);
+      })
+      .then(ui.getDeckSuccess)
+      .then(api.getDecks)
+      .then(ui.getDecksForLoadSuccess)
+      .then(api.getCards)
+      .then(ui.getCardsSuccess)
       .catch(ui.failure);
   }
 };
@@ -96,30 +109,23 @@ const onGetCardLinks = function () {
 const onAddCard = function (event) {
   event.preventDefault();
   let card = ($('#cards-list').find(':selected').text());
+  let data;
   for (let i = 0; i < store.cards.length; i++) {
     if(store.cards[i].name === card) {
       store.deck.cards.push(store.cards[i]);
-      let data = {
+      data = {
         card_link: {
           deck_id: store.deck.id+'',
           card_id: ''+store.cards[i].id
         }
       };
-      $('#remove-card-div').hide();
-      api.newCardLink(data)
-        .then(ui.newCardLinkSuccess)
-        .catch(ui.failure);
-      onGetCardLinks();
-      return;
+      break;
     }
   }
-  let data2 = {
-    deck: {
-      description: "Cards in Deck: "+store.deck.cards.length
-    }
-  };
-  api.updateCardCount(data2, store.deck.id)
-    .then(ui.updateCardCountSuccess)
+  $('#remove-card-div').hide();
+  api.newCardLink(data)
+    .then(ui.newCardLinkSuccess)
+    .then(onGetCardLinks)
     .catch(ui.failure);
 };
 
@@ -130,10 +136,11 @@ const onRemoveCard = function (event) {
   let card_id;
   for (let i = 0; i < store.cards.length; i++) {
     if(store.cards[i].name === card) {
-      console.log(store.cards[i].id);
       card_id = store.cards[i].id;
       break;
     }
+  }
+  if(!card_id) {
   }
   let data;
   for (let i in store.deck.links) {
@@ -147,21 +154,24 @@ const onRemoveCard = function (event) {
   }
   api.removeCardLink(data)
     .then(ui.removeCardLinkSuccess)
-    .then($('#deck-cards').find("option:contains("+card+")").remove())
-    .catch(ui.failure);
-  for(let i in store.deck.cards) {
-    if(store.deck.cards[i].name === card) {
-      store.deck.cards.splice(i,1);
-    }
-  }
-  let data2 = {
-    deck: {
-      description: "Cards in Deck: "+store.deck.cards.length
-    }
-  };
-  api.updateCardCount(data2, store.deck.id)
-    .then(ui.updateCardCountSuccess)
-    .catch(ui.failure);
+    .then(()=>{
+      $('#deck-cards').find("option:contains("+card+")").remove();
+      for(let i in store.deck.cards) {
+        if(store.deck.cards[i].name === card) {
+          store.deck.cards.splice(i,1);
+        }
+      }
+      let data2 = {
+        deck: {
+          description: "Cards in Deck: "+store.deck.cards.length
+        }
+      };
+      api.updateCardCount(data2, store.deck.id)
+        .then(ui.updateCardCountSuccess)
+        .catch(ui.failure);
+    })
+    .catch(ui.deleteCardFailure)
+    .then();
 };
 
 const addHandlers = () => {
