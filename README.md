@@ -42,7 +42,14 @@ The biggest future improvement to this project, asside from improved functionali
 4. A user can log out
 5. A user can create a new deck
 6. A user can load a deck
-7. A player can add cards to a deck
-8. A playe can remove cards from a deck
+7. A user can add cards to a deck
+8. A user can remove cards from a deck
+9. A user can not remove a card another user added to a deck
+
+## ERD
+
+A User owns many card_links
+A card has many card_links
+A deck has many card_links
 
 # Origonal page wireframe: https://docs.google.com/drawings/d/1o3w357Aceu1oVNpfb9kpcv552FsKWTdH949rLzoKQq0/edit?usp=sharing
