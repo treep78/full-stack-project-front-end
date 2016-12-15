@@ -1,5 +1,9 @@
 # Deck Builder App
 
+## Description
+
+This app allows users to build cutom decks from a given set of 12 different cards. A deck can contain multiples of any card. Decks are automatically updated on the serve whenever a card is added to or removed from them. Decks can always be loaded from the load decks drop menu.
+
 ## Links
 
 Back End Repo: https://github.com/treep78/full-stack-back-end <br />
@@ -50,7 +54,7 @@ The biggest future improvement to this project, asside from improved functionali
 ## ERD
 
 A User owns many card_links,
-A card has many card_links, 
+A card has many card_links,
 A deck has many card_links
 ![alt tag](https://github.com/treep78/full-stack-project-front-end/blob/master/erd.png)
 
