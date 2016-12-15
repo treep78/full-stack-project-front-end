@@ -52,4 +52,4 @@ A User owns many card_links
 A card has many card_links
 A deck has many card_links
 
-# Origonal page wireframe: https://docs.google.com/drawings/d/1o3w357Aceu1oVNpfb9kpcv552FsKWTdH949rLzoKQq0/edit?usp=sharing
+# Origonal page wireframe: ![alt tag](http://colorvisiontesting.com/images/plate%20with%205.jpg)
