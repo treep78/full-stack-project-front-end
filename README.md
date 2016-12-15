@@ -51,6 +51,7 @@ The biggest future improvement to this project, asside from improved functionali
 A User owns many card_links
 A card has many card_links
 A deck has many card_links
+![alt tag](https://github.com/treep78/full-stack-project-front-end/blob/master/erd.png)
 
-# Page Wireframe:
-![alt tag](http://colorvisiontesting.com/images/plate%20with%205.jpg)
+## Page Wireframe:
+![alt tag](https://github.com/treep78/full-stack-project-front-end/blob/master/wireframe.png)
