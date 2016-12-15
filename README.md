@@ -32,7 +32,7 @@ I started by planning out the different files I would need and how they would be
 7. Clean-up
 
 ## Future Improvements:
-The biggest future improvement to this project, asside from improved functionality, would be visual formatting which is largely absent from this app
+The biggest future improvement to this project, asside from improved functionality, would be visual formatting which is largely absent from this app.
 
 ## User Stories:
 
